@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Returning…</title></head>
+<body style="font:16px system-ui;padding:24px">
+<p id="m">Returning to your tracker…</p>
+<script>
+var q = new URLSearchParams(location.search), m = document.getElementById('m');
+try {
+  if (q.get('error')) throw new Error(q.get('error_description') || q.get('error'));
+  var raw = q.get('state').replace(/-/g, '+').replace(/_/g, '/');
+  var st = JSON.parse(atob(raw));
+  if (!/^https:\/\/script\.google\.com\//.test(st.u)) throw new Error('Unexpected return address');
+  location.replace(st.u + '?code=' + encodeURIComponent(q.get('code')) + '&state=' + encodeURIComponent(q.get('state')));
+} catch (e) { m.textContent = 'Could not continue: ' + e.message; }
+</script>
+</body></html>
